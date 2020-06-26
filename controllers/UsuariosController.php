@@ -132,7 +132,7 @@ class UsuariosController extends Controller
 
         if($post){
             $model->load($post);
-            $model->primeiro_acesso = 0;
+            $model->primeiro_acesso = 1;
             $model->save();
 
             return $this->redirect(['/produtos/index']);
