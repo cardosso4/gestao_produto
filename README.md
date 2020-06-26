@@ -6,6 +6,27 @@
     <br>
 </p>
 
+Requisitos para instalação da aplicação
+GIT
+Composer
+Banco de dadaos Mysql
+
+/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/
+
+Instalação da aplicação
+
+1º executar git clone https://github.com/cardosso4/gestao_produto.git
+2º executar composer update
+3º Criar a database no banco de dados com o nome "supernow".
+4º execuar o comando yii migrate
+5º executar o comnado php yii serve
+
+Acesso a aplicação: 
+Url: http://localhost:8080/
+Ligin: admin@teste.com
+Senha: novo123
+
+
 Yii 2 Basic Project Template is a skeleton [Yii 2](http://www.yiiframework.com/) application best for
 rapidly creating small projects.
 
