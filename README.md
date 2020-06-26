@@ -21,7 +21,7 @@ Instalação da aplicação<br>
 3º Executar o comando composer update  <br>
 4º Criar a database no banco de dados com o nome "supernow" <br>
 5º Executar o comando yii migrate <br>
-6º Executar o comnado php yii serve <br>
+6º Executar o comando php yii serve <br>
 
 Acesso a aplicação:  <br>
 Url: http://localhost:8080/ <br>
