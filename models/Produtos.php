@@ -61,7 +61,7 @@ class Produtos extends \yii\db\ActiveRecord
 
     public function getSituacaoLabel(){
         if($this->situacao == 0){
-            return 'Não avaliado';
+            return 'Pendente, em análise';
         }
         elseif($this->situacao == 1){
             return 'Aprovado';

@@ -2,27 +2,24 @@
 
 namespace app\models;
 
+use yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Produtos;
+use app\models\Workflowaprovacao;
 
 /**
- * ProdutosSearch represents the model behind the search form of `app\models\Produtos`.
+ * WorkflowaprovacaoSearch represents the model behind the search form of `app\models\Workflowaprovacao`.
  */
-class ProdutosSearch extends Produtos
+class WorkflowaprovacaoSearch extends Workflowaprovacao
 {
-
-    public $pesquisar;
-
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'situacao'], 'integer'],
-            [['codigo', 'descricao', 'narrativa', 'create_at','pesquisar'], 'safe'],
-            [['valor'], 'number'],
+            [['id', 'produto_id', 'aprovador_id', 'situacao'], 'integer'],
+            [['observacao', 'create_at'], 'safe'],
         ];
     }
 
@@ -44,10 +41,8 @@ class ProdutosSearch extends Produtos
      */
     public function search($params)
     {
-        $query = Produtos::find();
-
-
-        
+        $query = Workflowaprovacao::find();
+        $query->LeftJoin('aprovador', 'aprovador.id = workflowaprovacao.aprovador_id');
 
         // add conditions that should always apply here
 
@@ -63,20 +58,13 @@ class ProdutosSearch extends Produtos
             return $dataProvider;
         }
 
-        // grid filtering conditions
 
-        if(isset($params['valor'])){
-            $valor = explode(',',$params['valor']);
+        $query->andFilterWhere(['workflowaprovacao.situacao' => $this->situacao]);
 
-            $query->andFilterWhere(['>=', 'valor', $valor[0]])
-            ->andFilterWhere(['<=', 'valor', $valor[1]]);
-        }
+        $user_id = Yii::$app->user->getId();
 
-        $query->andFilterWhere(['situacao' => $this->situacao]);
+        $query->andFilterWhere(['aprovador.user_id' => $user_id]);
 
-        $query->orFilterWhere(['like', 'codigo', $this->pesquisar])
-            ->orFilterWhere(['like', 'descricao', $this->pesquisar]);
-            
         return $dataProvider;
     }
 }

@@ -1,0 +1,32 @@
+<?php
+
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/* @var $this yii\web\View */
+/* @var $model app\models\AprovadorSearch */
+/* @var $form yii\widgets\ActiveForm */
+?>
+
+<div class="aprovador-search">
+
+    <?php $form = ActiveForm::begin([
+        'action' => ['index'],
+        'method' => 'get',
+    ]); ?>
+
+    <div class="form-group col-lg-5 col-md-12 col-sm-12 col-xs-12">
+        <?= $form->field($model, 'pesquisar') ?>
+    </div>
+
+    <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+        <?= $form->field($model, 'situacao')->dropDownList([0 => 'Inativo', 1 => 'Ativo']); ?>
+    </div>
+
+    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <?= Html::submitButton('Pesquisar', ['class' => 'btn btn-primary']) ?>
+    </div> 
+
+    <?php ActiveForm::end(); ?>
+
+</div>

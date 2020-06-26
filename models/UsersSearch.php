@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Produtos;
+use app\models\Users;
 
 /**
- * ProdutosSearch represents the model behind the search form of `app\models\Produtos`.
+ * UsersSearch represents the model behind the search form of `app\models\Users`.
  */
-class ProdutosSearch extends Produtos
+class UsersSearch extends Users
 {
 
     public $pesquisar;
@@ -20,9 +20,8 @@ class ProdutosSearch extends Produtos
     public function rules()
     {
         return [
-            [['id', 'situacao'], 'integer'],
-            [['codigo', 'descricao', 'narrativa', 'create_at','pesquisar'], 'safe'],
-            [['valor'], 'number'],
+            [['id', 'nivel', 'primeiro_acesso'], 'integer'],
+            [['name', 'email', 'password', 'create_at','pesquisar'], 'safe'],
         ];
     }
 
@@ -44,10 +43,7 @@ class ProdutosSearch extends Produtos
      */
     public function search($params)
     {
-        $query = Produtos::find();
-
-
-        
+        $query = Users::find();
 
         // add conditions that should always apply here
 
@@ -64,19 +60,18 @@ class ProdutosSearch extends Produtos
         }
 
         // grid filtering conditions
+        // $query->andFilterWhere([
+        //     'id' => $this->id,
+        //     'nivel' => $this->nivel,
+        //     'aceite_termos' => $this->aceite_termos,
+        //     'create_at' => $this->create_at,
+        // ]);
 
-        if(isset($params['valor'])){
-            $valor = explode(',',$params['valor']);
+        $query->andFilterWhere(['nivel'=> $this->nivel]);
 
-            $query->andFilterWhere(['>=', 'valor', $valor[0]])
-            ->andFilterWhere(['<=', 'valor', $valor[1]]);
-        }
+        $query->orFilterWhere(['like', 'name', $this->pesquisar])
+             ->orFilterWhere(['like', 'email', $this->pesquisar]);
 
-        $query->andFilterWhere(['situacao' => $this->situacao]);
-
-        $query->orFilterWhere(['like', 'codigo', $this->pesquisar])
-            ->orFilterWhere(['like', 'descricao', $this->pesquisar]);
-            
         return $dataProvider;
     }
 }

@@ -21,7 +21,7 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\models\Users',
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
@@ -54,7 +54,7 @@ $config = [
         
     ],
     'params' => $params,
-    //'defaultRoute' => '/site/login',
+    'defaultRoute' => '/produtos/index',
 ];
 
 if (YII_ENV_DEV) {

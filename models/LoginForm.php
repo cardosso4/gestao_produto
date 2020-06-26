@@ -27,7 +27,7 @@ class LoginForm extends Model
     {
         return [
             // username and password are both required
-            [['username', 'password'], 'required'],
+            [['username', 'password'], 'required','message' => 'Não pode ficar em branco'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
@@ -47,8 +47,9 @@ class LoginForm extends Model
         if (!$this->hasErrors()) {
             $user = $this->getUser();
 
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+            if (!$user || !Yii::$app->getSecurity()->validatePassword($this->password, $user->password)) {
+                
+                $this->addError($attribute, 'Usuário ou senha incorretos');
             }
         }
     }
@@ -73,7 +74,7 @@ class LoginForm extends Model
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = User::findByUsername($this->username);
+            $this->_user = Users::findByUsername($this->username);
         }
 
         return $this->_user;

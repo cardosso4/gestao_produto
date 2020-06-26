@@ -7,8 +7,11 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
+
+use app\models\Users;
 use app\models\LoginForm;
 use app\models\ContactForm;
+
 
 class SiteController extends Controller
 {
@@ -71,19 +74,56 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+        $post = Yii::$app->request->post();
+
+        if($post){
+            $user = $post['LoginForm']['username'];
+            $pass = $post['LoginForm']['password'];
+            
+            $loginPost['LoginForm'] = array(
+                'username' => $post['LoginForm']['username'],
+                'password' => $post['LoginForm']['password']
+            );     
+
+            // $model->load($loginPost);
+            // echo '<pre>'; print_r($model->login()); echo '<pre>'; die;
+
+            if($model->load($loginPost) && $model->login()) {
+
+                if(Yii::$app->user->identity->primeiro_acesso == 0){
+                    return $this->redirect(['usuarios/primeiro','id' => Yii::$app->user->identity->id]);
+                }else{
+                    return $this->goBack(); 
+                }
+                
+            }else{
+                return $this->render('login', [
+                    'model' => $model,
+                ]);
+            }
+            
+        }else{
+            return $this->render('login', [
+                'model' => $model,
+            ]);
         }
 
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+
+        // if (!Yii::$app->user->isGuest) {
+        //     return $this->goHome();
+        // }
+
+        // $model = new LoginForm();
+        // if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        //     return $this->goBack();
+        // }
+
+        // $model->password = '';
+        // return $this->render('login', [
+        //     'model' => $model,
+        // ]);
     }
 
     /**

@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Produtos;
+use app\models\Aprovador;
 
 /**
- * ProdutosSearch represents the model behind the search form of `app\models\Produtos`.
+ * AprovadorSearch represents the model behind the search form of `app\models\Aprovador`.
  */
-class ProdutosSearch extends Produtos
+class AprovadorSearch extends Aprovador
 {
 
     public $pesquisar;
@@ -20,9 +20,8 @@ class ProdutosSearch extends Produtos
     public function rules()
     {
         return [
-            [['id', 'situacao'], 'integer'],
-            [['codigo', 'descricao', 'narrativa', 'create_at','pesquisar'], 'safe'],
-            [['valor'], 'number'],
+            [['id', 'user_id', 'situacao'], 'integer'],
+            [['create_at','pesquisar'], 'safe'],
         ];
     }
 
@@ -44,10 +43,8 @@ class ProdutosSearch extends Produtos
      */
     public function search($params)
     {
-        $query = Produtos::find();
-
-
-        
+        $query = Aprovador::find();
+        $query->LeftJoin('users', 'users.id = aprovador.user_id');
 
         // add conditions that should always apply here
 
@@ -63,20 +60,11 @@ class ProdutosSearch extends Produtos
             return $dataProvider;
         }
 
-        // grid filtering conditions
+        $query->andFilterWhere(['situacao'=> $this->situacao]);
 
-        if(isset($params['valor'])){
-            $valor = explode(',',$params['valor']);
 
-            $query->andFilterWhere(['>=', 'valor', $valor[0]])
-            ->andFilterWhere(['<=', 'valor', $valor[1]]);
-        }
+        $query->andFilterWhere(['like','name', $this->pesquisar]);
 
-        $query->andFilterWhere(['situacao' => $this->situacao]);
-
-        $query->orFilterWhere(['like', 'codigo', $this->pesquisar])
-            ->orFilterWhere(['like', 'descricao', $this->pesquisar]);
-            
         return $dataProvider;
     }
 }

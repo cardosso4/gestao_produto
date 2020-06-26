@@ -4,12 +4,15 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Produtos;
+use app\models\Aprovador;
 use app\models\UploadForm;
 use app\models\ProdutosSearch;
+use app\models\Workflowaprovacao;
 
 use yii\web\Controller;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 
 
@@ -24,9 +27,22 @@ class ProdutosController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index','view','create','update','delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        //'actions' => ['logout'],
+                        'roles' => ['@'],
+                    ],
+                    
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
+                    'logout' => ['get'],
                     'delete' => ['POST'],
                 ],
             ],
@@ -42,7 +58,13 @@ class ProdutosController extends Controller
         $searchModel = new ProdutosSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $range = (new \yii\db\Query())
+                ->select(['MAX(valor) as max','MIN(valor) as min'])
+                ->from('produtos')
+                ->all();
+
         return $this->render('index', [
+            'range' => $range,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -94,7 +116,23 @@ class ProdutosController extends Controller
                 $model->imagem = '/repositorio/imagem/'.strtolower(str_replace(' ','',UploadedFile::getInstance($modelupload, 'imageFile')->name));
             }
 
-            $model->save();
+            
+            if($model->save()){
+
+                $modelAprovador = Aprovador::find()->all();
+
+                foreach ($modelAprovador as $key => $value) {
+                    $workflow = new Workflowaprovacao();
+
+                    $workflow->produto_id     = $model->id;
+                    $workflow->aprovador_id   = $value->id;
+                    $workflow->situacao       = 0;
+
+                    $workflow->save();
+
+                }
+
+            }
 
             return $this->redirect(['index']);
             
@@ -142,7 +180,26 @@ class ProdutosController extends Controller
                 $model->imagem = '/repositorio/imagem/'.strtolower(str_replace(' ','',UploadedFile::getInstance($modelupload, 'imageFile')->name));
             }
 
-            $model->save();
+            if($model->save()){
+
+                Yii::$app->db->createCommand("
+                                DELETE FROM workflowaprovacao 
+                                WHERE produto_id = ".$model->id)->execute();                 
+
+                $modelAprovador = Aprovador::find()->all();
+
+                foreach ($modelAprovador as $key => $value) {
+                    $workflow = new Workflowaprovacao();
+
+                    $workflow->produto_id     = $model->id;
+                    $workflow->aprovador_id   = $value->id;
+                    $workflow->situacao       = 0;
+
+                    $workflow->save();
+
+                }
+
+            }
 
             return $this->redirect(['index']);
             
@@ -152,6 +209,34 @@ class ProdutosController extends Controller
                 'modelupload' => $modelupload
             ]);
         }
+
+    }
+
+    public function actionAnalise($id){
+
+        $model = $this->findModel($id);
+
+        Yii::$app->db->createCommand("
+                        DELETE FROM workflowaprovacao 
+                        WHERE produto_id = ".$model->id)->execute();                 
+
+        $modelAprovador = Aprovador::find()->all();
+
+        foreach ($modelAprovador as $key => $value) {
+            $workflow = new Workflowaprovacao();
+
+            $workflow->produto_id     = $model->id;
+            $workflow->aprovador_id   = $value->id;
+            $workflow->situacao       = 0;
+
+            $workflow->save();
+
+        }     
+        
+        $model->situacao = 0;
+        $model->save();
+
+        return $this->redirect(['index']);
 
     }
 

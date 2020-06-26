@@ -16,53 +16,68 @@ $this->params['breadcrumbs'][] = $this->title;
 
           <h1><?= Html::encode($this->title) ?></h1>
 
-          <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
-
-          <p>
-              <?= Html::a('Criar Produtos', ['create'], ['class' => 'btn btn-success']) ?>
-          </p>
+          <?php  echo $this->render('_search', ['model' => $searchModel,'range' => $range,]); ?>
 
 
-          <?= GridView::widget([
-              'dataProvider' => $dataProvider,
-              //'filterModel' => $searchModel,
-              'columns' => [
-                  ['class' => 'yii\grid\SerialColumn'],
+          <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12">
+            <?= Html::a('Criar Produtos', ['create'], ['class' => 'btn btn-success']) ?>
+          </div>
 
-                // 'id',
-                  [
-                      'label' => 'Produto',
-                      'value' => function($data){
-                          return $data->codigo.'-'.$data->descricao;
-                      }
-                  ],
-                  // 'codigo',
-                  // 'descricao',
-                  [
-                      'attribute' => 'valor',
-                      'format'=>['decimal', 2],
-                  ],
-                  // 'valor',
-                  [
-                      'label' => 'Stuacao',
-                      'attribute' => 'situacaoLabel' 
-                  ],
-                  //'narrativa:ntext',
-                  //'create_at',
+          <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                //'filterModel' => $searchModel,
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
 
-                  [
-                      'label' => '',
-                      'format' => 'raw',
-                      'value' => function($data){
-                          $icon = '<i style="cursor: pointer;" class="glyphicon glyphicon-camera imagem" data-img="'.$data->imagem.'" title="Visualizar imgem" aria-hidden="true"></i>';
-                          return  $icon;
-                          
-                      }
-                  ],
+                  // 'id',
+                    [
+                        'label' => 'Produto',
+                        'value' => function($data){
+                            return $data->codigo.'-'.$data->descricao;
+                        }
+                    ],
+                    // 'codigo',
+                    // 'descricao',
+                    [
+                        'attribute' => 'valor',
+                        'format'=>['decimal', 2],
+                    ],
+                    // 'valor',
+                    [
+                        'label' => 'Stuacao',
+                        'attribute' => 'situacaoLabel' 
+                    ],
+                    //'narrativa:ntext',
+                    //'create_at',
 
-                  ['class' => 'yii\grid\ActionColumn'],
-              ],
-          ]); ?>
+                    [
+                        'label' => '',
+                        'format' => 'raw',
+                        'value' => function($data){
+                            $icon = '<i style="cursor: pointer;" class="glyphicon glyphicon-camera imagem" data-img="'.$data->imagem.'" title="Visualizar imgem" aria-hidden="true"></i>';
+                            return  $icon;
+                            
+                        }
+                    ],
+                    [
+                        'label' => '',
+                        'format' => 'raw',
+                        'value' => function($data){
+
+                            if($data->situacao != 0){
+                              return Html::a(' <span class="glyphicon glyphicon-check"></span>', ['/produtos/analise', 'id' => $data->id], ['title' => "Solicitar analise", 'aria-label' => "View", 'data-pjax' => "0"]);
+                            }else{
+                              return '';
+                            }
+
+                        }
+                    ],                    
+
+                    ['class' => 'yii\grid\ActionColumn'],
+                ],
+            ]); ?>
+          </div>
 
 
       </div>
