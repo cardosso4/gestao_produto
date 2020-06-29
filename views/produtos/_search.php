@@ -8,6 +8,10 @@ use kartik\slider\Slider;
 /* @var $this yii\web\View */
 /* @var $model app\models\ProdutosSearch */
 /* @var $form yii\widgets\ActiveForm */
+
+$val = $range[0]['min']>0?$range[0]['min']:0;
+$val2 = $range[0]['max']>0?$range[0]['max']:0;
+
 ?>
 
 <div class="produtos-search">
@@ -29,7 +33,7 @@ use kartik\slider\Slider;
     <?php
             echo '<b class="badge">R$'.number_format($range[0]['min'],2,",",".").'  </b> ' . Slider::widget([
                 'name'=>'valor',
-                'value'=> $range[0]['min'].','.$range[0]['max'],
+                'value'=> $val.','.$val2,
                 'sliderColor'=>Slider::TYPE_GREY,
                 'pluginOptions'=>[
                     'min'=>$range[0]['min']-5,
