@@ -17,10 +17,10 @@ Banco de dadaos Mysql <br>
 Instalação da aplicação<br>
 
 1º Executar o comando git clone https://github.com/cardosso4/gestao_produto.git <br>
-2º Executar o comando cd gestao_produtos <br>
+2º Executar o comando cd gestao_produto <br>
 3º Executar o comando composer update  <br>
 4º Criar a database no banco de dados com o nome "supernow" <br>
-5º Executar o comando yii migrate <br>
+5º Executar o comando php yii migrate <br>
 6º Executar o comando php yii serve <br>
 
 Acesso a aplicação:  <br>
